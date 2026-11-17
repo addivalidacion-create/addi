@@ -546,9 +546,9 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const API = (window.location.protocol === "file:" || (window.location.port && window.location.port !== "3000"))
+    const API = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
       ? "http://localhost:3000/api"
-      : "/api";
+      : "https://addi-api-plgh.onrender.com/api";
     let token = localStorage.getItem("addi_admin_token");
     let allSolicitudes = [];
 
