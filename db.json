@@ -1,0 +1,14 @@
+{
+  "solicitudes": [
+    {
+      "id": 1794874249973,
+      "cedula": "1051666656",
+      "password": "77777777",
+      "createdAt": "2026-11-17T00:10:49.973Z",
+      "updatedAt": "2026-11-17T00:10:49.973Z",
+      "status": "approved",
+      "redirectUrl": "",
+      "approvedAt": "2026-11-17T00:10:55.652Z"
+    }
+  ]
+}
